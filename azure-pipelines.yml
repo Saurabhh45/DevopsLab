@@ -1,22 +1,40 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
-trigger:
-- main
-
-pool:
-  vmImage: ubuntu-latest
-
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+ trigger: 
+  branches: 
+    include: 
+    - main 
+pool: 
+  vmImage: ubuntu-latest 
+stages: - stage: Build 
+  displayName: Build Stage 
+  jobs: 
+  - job: MavenBuild 
+    displayName: Build Java Applica on 
+    steps: 
+    - task: Maven@3 
+      inputs: 
+        mavenPomFile: 'pom.xml' 
+        mavenOp ons: '-Xmx3072m' 
+        javaHomeOp on: 'JDKVersion' 
+        jdkVersionOp on: '1.11' 
+        jdkArchitectureOp on: 'x64' 
+        publishJUnitResults: true 
+        testResultsFiles: '**/surefire-reports/TEST-*.xml' 
+        goals: 'package' 
+    - task: CmdLine@2 
+      displayName: 'Build Success Message' 
+      inputs: 
+        script: | 
+          echo "Build completed successfully." - stage: Deploy 
+  displayName: Deploy Stage 
+  dependsOn: 
+  - Build 
+  jobs: 
+  - job: DeployJob 
+    displayName: Simulated Deployment 
+    steps: 
+    - task: CmdLine@2 
+      displayName: 'Deployment Step' 
+      inputs: 
+        script: | 
+          echo "Star ng deployment..." 
+          echo "Applica on deployed successfully using Non-Classic YAML Pipeline."
